@@ -1,0 +1,9 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.rxcats.datasourceroute.mapper.common.IdGeneratorMapper">
+    <insert id="generate" parameterType="IdGenerator" useGeneratedKeys="true">
+        INSERT INTO tb_id (idType, idValue) VALUES(#{idType}, null)
+        <selectKey keyProperty="idValue" resultType="String" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+</mapper>
