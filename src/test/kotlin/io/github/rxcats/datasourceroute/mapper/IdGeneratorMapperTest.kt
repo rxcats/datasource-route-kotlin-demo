@@ -11,9 +11,11 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 
 @EnableAutoConfiguration
-@SpringBootTest(classes = [DataSourceConfig::class, IdGeneratorMapper::class, QueryHelper::class, TxManager::class])
+@Import(DataSourceConfig::class)
+@SpringBootTest(classes = [IdGeneratorMapper::class, QueryHelper::class, TxManager::class])
 class IdGeneratorMapperTest(
     @Autowired private val idGeneratorMapper: IdGeneratorMapper,
     @Autowired private val queryHelper: QueryHelper) {

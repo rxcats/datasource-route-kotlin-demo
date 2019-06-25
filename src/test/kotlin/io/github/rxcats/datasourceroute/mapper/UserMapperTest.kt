@@ -13,10 +13,12 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 import org.springframework.dao.DuplicateKeyException
 
 @EnableAutoConfiguration
-@SpringBootTest(classes = [DataSourceConfig::class, UserMapper::class, QueryHelper::class, TxManager::class])
+@Import(DataSourceConfig::class)
+@SpringBootTest(classes = [UserMapper::class, QueryHelper::class, TxManager::class])
 class UserMapperTest(
     @Autowired private val userMapper: UserMapper,
     @Autowired private val queryHelper: QueryHelper) {

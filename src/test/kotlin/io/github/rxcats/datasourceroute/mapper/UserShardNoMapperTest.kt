@@ -13,9 +13,11 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 
 @EnableAutoConfiguration
-@SpringBootTest(classes = [DataSourceConfig::class, UserShardNoMapper::class, CommonUserMapper::class, QueryHelper::class, TxManager::class])
+@Import(DataSourceConfig::class)
+@SpringBootTest(classes = [UserShardNoMapper::class, CommonUserMapper::class, QueryHelper::class, TxManager::class])
 class UserShardNoMapperTest(
     @Autowired private val userShardNoMapper: UserShardNoMapper,
     @Autowired private val commonUserMapper: CommonUserMapper,

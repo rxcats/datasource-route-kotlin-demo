@@ -13,10 +13,12 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 import org.springframework.jdbc.BadSqlGrammarException
 
 @EnableAutoConfiguration
-@SpringBootTest(classes = [DataSourceConfig::class, CommonUserMapper::class, QueryHelper::class, TxManager::class])
+@Import(DataSourceConfig::class)
+@SpringBootTest(classes = [CommonUserMapper::class, QueryHelper::class, TxManager::class])
 class CommonUserMapperTest(
     @Autowired private val commonUserMapper: CommonUserMapper,
     @Autowired private val queryHelper: QueryHelper) {
@@ -28,30 +30,24 @@ class CommonUserMapperTest(
 
     @Test
     fun crud() {
-        queryHelper.execute(db = DbType.COMMON, cb = {
-            val insertCnt = commonUserMapper.insert(TestData.commonUser())
-            assertThat(insertCnt).isEqualTo(1)
+        val insertCnt = queryHelper.execute(db = DbType.COMMON, cb = { commonUserMapper.insert(TestData.commonUser()) })
+        assertThat(insertCnt).isEqualTo(1)
 
-            val select = commonUserMapper.selectOne("1000001")
-            assertThat(select).isNotNull
-            assertThat(select.nickname).isEqualTo("Guest1000001")
+        val select = queryHelper.execute(db = DbType.COMMON, cb = { commonUserMapper.selectOne("1000001") })
+        assertThat(select).isNotNull
+        assertThat(select?.nickname).isEqualTo("Guest1000001")
 
-            val deleteCnt = commonUserMapper.delete("1000001")
-            assertThat(deleteCnt).isEqualTo(1)
-        })
+        val deleteCnt = queryHelper.execute(db = DbType.COMMON, cb = { commonUserMapper.delete("1000001") })
+        assertThat(deleteCnt).isEqualTo(1)
     }
 
     @Test
     fun txInsert() {
-        queryHelper.executeTx(db = DbType.COMMON, cb = {
-            val insertCnt = commonUserMapper.insert(TestData.commonUser())
-            assertThat(insertCnt).isEqualTo(1)
-        })
+        val insertCnt = queryHelper.executeTx(db = DbType.COMMON, cb = { commonUserMapper.insert(TestData.commonUser()) })
+        assertThat(insertCnt).isEqualTo(1)
 
-        queryHelper.execute(db = DbType.COMMON, cb = {
-            val user = commonUserMapper.selectOne("1000001")
-            assertThat(user).isNotNull
-        })
+        val user = queryHelper.execute(db = DbType.COMMON, cb = { commonUserMapper.selectOne("1000001") })
+        assertThat(user).isNotNull
     }
 
     @Test
