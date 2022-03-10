@@ -104,7 +104,7 @@ class DataSourceConfig(private val properties: DataSourceProperties) {
         val bean = SqlSessionFactoryBean()
         bean.setDataSource(dataSource)
         bean.setTypeAliasesPackage(ConfigScanEntity::class.java.`package`.toString())
-        bean.setMapperLocations(context.getResources(properties.mapperPath))
+        bean.setMapperLocations(*context.getResources(properties.mapperPath))
 
         val cnf = org.apache.ibatis.session.Configuration()
         cnf.databaseId = "mysql"
