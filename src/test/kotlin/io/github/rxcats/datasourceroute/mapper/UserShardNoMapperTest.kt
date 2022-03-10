@@ -1,23 +1,18 @@
 package io.github.rxcats.datasourceroute.mapper
 
-import io.github.rxcats.datasourceroute.DataSourceConfig
+import io.github.rxcats.datasourceroute.Application
 import io.github.rxcats.datasourceroute.TestData
-import io.github.rxcats.datasourceroute.TxManager
 import io.github.rxcats.datasourceroute.mapper.common.CommonUserMapper
 import io.github.rxcats.datasourceroute.mapper.common.UserShardNoMapper
-import io.github.rxcats.datasourceroute.service.DbType
-import io.github.rxcats.datasourceroute.service.QueryHelper
+import io.github.rxcats.datasourceroute.service.query.DbType
+import io.github.rxcats.datasourceroute.service.query.QueryHelper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
 
-@EnableAutoConfiguration
-@Import(DataSourceConfig::class)
-@SpringBootTest(classes = [UserShardNoMapper::class, CommonUserMapper::class, QueryHelper::class, TxManager::class])
+@SpringBootTest(classes = [Application::class])
 class UserShardNoMapperTest(
     @Autowired private val userShardNoMapper: UserShardNoMapper,
     @Autowired private val commonUserMapper: CommonUserMapper,

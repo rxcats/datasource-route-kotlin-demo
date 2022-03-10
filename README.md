@@ -1,53 +1,60 @@
-# MyBatis DataSourceRouter example
+# MyBatis RoutingDataSource
 
 ## application.properties 설정 
 ```
 # MyBatis Query 로깅 설정
 logging.level.io.github.rxcats.datasourceroute.mapper=debug
 
+# mybatis configuration
+mybatis.configuration.map-underscore-to-camel-case=true
+
 # 공통 MySQL 설정
 app.database.driver-class-name=com.mysql.cj.jdbc.Driver
-app.database.mapper-path=classpath:mybatis/mapper/**/*.xml
-app.database.auto-commit=true
+app.database.shard-targets=1,2
 
 # 유저 생성시 샤딩 타겟이 되는 DB index array 값
 app.database.shard-targets=0,1
 
-# commondb 설정
-app.database.common.pool-name=commondb
-app.database.common.connection-timeout=5000
-app.database.common.idle-timeout=600000
-app.database.common.maximum-pool-size=10
-app.database.common.username=username
-app.database.common.password=password
-app.database.common.jdbc-url=jdbc:mysql://192.168.99.100:3306/commondb?useUnicode=true&useSSL=false&verifyServerCertificate=false&useLocalSessionState=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+# commondb
+app.database.properties.common.pool-name=commondb
+app.database.properties.common.connection-timeout=5000
+app.database.properties.common.idle-timeout=600000
+app.database.properties.common.maximum-pool-size=10
+app.database.properties.common.username=root
+app.database.properties.common.password=qwer1234
+app.database.properties.common.jdbc-url=jdbc:mysql://localhost:3306/route_commondb
 
-# userdb[0] 샤드0 설정
-app.database.user[0].pool-name=user[0]
-app.database.user[0].connection-timeout=5000
-app.database.user[0].idle-timeout=600000
-app.database.user[0].maximum-pool-size=10
-app.database.user[0].username=username
-app.database.user[0].password=password
-app.database.user[0].jdbc-url=jdbc:mysql://192.168.99.100:3306/userdb0?useUnicode=true&useSSL=false&verifyServerCertificate=false&useLocalSessionState=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+# userdb[1]
+app.database.properties.user1.pool-name=user1
+app.database.properties.user1.connection-timeout=5000
+app.database.properties.user1.idle-timeout=600000
+app.database.properties.user1.maximum-pool-size=10
+app.database.properties.user1.username=root
+app.database.properties.user1.password=qwer1234
+app.database.properties.user1.jdbc-url=jdbc:mysql://localhost:3306/route_userdb1
 
-# userdb[1] 샤드1 설정
-app.database.user[1].pool-name=user[1]
-app.database.user[1].connection-timeout=5000
-app.database.user[1].idle-timeout=600000
-app.database.user[1].maximum-pool-size=10
-app.database.user[1].username=username
-app.database.user[1].password=password
-app.database.user[1].jdbc-url=jdbc:mysql://192.168.99.100:3306/userdb1?useUnicode=true&useSSL=false&verifyServerCertificate=false&useLocalSessionState=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+# userdb[2]
+app.database.properties.user2.pool-name=user2
+app.database.properties.user2.connection-timeout=5000
+app.database.properties.user2.idle-timeout=600000
+app.database.properties.user2.maximum-pool-size=10
+app.database.properties.user2.username=root
+app.database.properties.user2.password=qwer1234
+app.database.properties.user2.jdbc-url=jdbc:mysql://localhost:3306/route_userdb2
 ```
 
 ## DB Query 예제
 ```kotlin
 @Service
-class UserService(
-    @Autowired private val commonUserMapper: CommonUserMapper,
-    @Autowired private val queryHelper: QueryHelper) {
+class UserService {
+    @Autowired
+    private lateinit var commonUserMapper: CommonUserMapper
     
-    fun select(userId: String): CommonUser = queryHelper.execute(db = DbType.COMMON, cb = { commonUserMapper.selectOne("1000001") })
+    @Autowired
+    private lateinit var queryHelper: QueryHelper
+    
+    fun select(userId: String): CommonUser = queryHelper.execute(db = DbType.COMMON) { 
+        commonUserMapper.selectOne(userId) 
+    }
 }
 ```

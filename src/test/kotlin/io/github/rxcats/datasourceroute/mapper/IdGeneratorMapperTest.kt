@@ -1,30 +1,38 @@
 package io.github.rxcats.datasourceroute.mapper
 
-import io.github.rxcats.datasourceroute.DataSourceConfig
-import io.github.rxcats.datasourceroute.TxManager
+import io.github.rxcats.datasourceroute.Application
 import io.github.rxcats.datasourceroute.entity.IdGenerator
 import io.github.rxcats.datasourceroute.mapper.common.IdGeneratorMapper
-import io.github.rxcats.datasourceroute.service.DbType
-import io.github.rxcats.datasourceroute.service.QueryHelper
+import io.github.rxcats.datasourceroute.service.query.DbType
+import io.github.rxcats.datasourceroute.service.query.QueryHelper
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
 
-@EnableAutoConfiguration
-@Import(DataSourceConfig::class)
-@SpringBootTest(classes = [IdGeneratorMapper::class, QueryHelper::class, TxManager::class])
-class IdGeneratorMapperTest(
-    @Autowired private val idGeneratorMapper: IdGeneratorMapper,
-    @Autowired private val queryHelper: QueryHelper) {
+@SpringBootTest(classes = [Application::class])
+class IdGeneratorMapperTest {
+    @Autowired
+    private lateinit var idGeneratorMapper: IdGeneratorMapper
+
+    @Autowired
+    private lateinit var queryHelper: QueryHelper
+
+    @BeforeEach
+    fun before() {
+        queryHelper.execute(DbType.COMMON) {
+            idGeneratorMapper.deleteAll()
+        }
+    }
 
     @Test
     fun generate() {
         val input = IdGenerator("test")
-        val insert = queryHelper.execute(db = DbType.COMMON, cb = { idGeneratorMapper.generate(input) })
+        val insert = queryHelper.execute(DbType.COMMON) {
+            idGeneratorMapper.generate(input)
+        }
         assertThat(insert).isEqualTo(1)
-        assertThat(input.idValue).isNotNull()
+        assertThat(input.idValue).isNotNull
     }
 }

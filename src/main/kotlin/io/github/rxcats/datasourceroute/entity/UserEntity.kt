@@ -3,24 +3,24 @@ package io.github.rxcats.datasourceroute.entity
 import java.time.LocalDateTime
 
 data class CommonUser(
-    val userId: String,
-    val nickname: String,
-    val shardNo: Int,
-    val createdAt: LocalDateTime
+    var userId: String,
+    var nickname: String,
+    var shardNo: Int,
+    var createdAt: LocalDateTime
 )
 
 data class User(
-    val userId: String,
-    val nickname: String,
-    val createdAt: LocalDateTime
+    var userId: String,
+    var nickname: String,
+    var createdAt: LocalDateTime
 )
 
 data class UserShardNo(
-    val userId: String,
-    val shardNo: Int
+    var userId: String,
+    var shardNo: Int
 )
 
 data class IdGenerator(
-    val idType: String,
-    val idValue: String? = null
+    var idType: String = "",
+    var idValue: Long = 0
 )
