@@ -11,7 +11,7 @@ interface CommonUserMapper {
     @Select("""
         SELECT user_id, nickname, shard_no, created_at FROM common_user WHERE user_id = #{userId}
     """)
-    fun selectOne(userId: String): CommonUser
+    fun selectOne(userId: String): CommonUser?
 
     @Insert("""
         INSERT INTO common_user (user_id, nickname, shard_no, created_at) VALUES(#{userId}, #{nickname}, #{shardNo}, #{createdAt})

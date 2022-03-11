@@ -38,7 +38,7 @@ class CommonUserMapperTest {
 
             val select = commonUserMapper.selectOne("1000001")
             assertThat(select).isNotNull
-            assertThat(select.nickname).isEqualTo("Guest1000001")
+            assertThat(select?.nickname).isEqualTo("Guest1000001")
 
             val deleteCnt = commonUserMapper.delete("1000001")
             assertThat(deleteCnt).isEqualTo(1)
