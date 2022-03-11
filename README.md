@@ -53,8 +53,44 @@ class UserService {
     @Autowired
     private lateinit var queryHelper: QueryHelper
     
-    fun select(userId: String): CommonUser = queryHelper.execute(db = DbType.COMMON) { 
-        commonUserMapper.selectOne(userId) 
+    fun getCommonUser(userId: String): CommonUser? {
+        return queryHelper.execute(db = DbType.COMMON) {
+            commonUserMapper.selectOne(userId)
+        }
+    }
+}
+```
+
+## AOP 이용 예제
+```kotlin
+@Service
+class UserService {
+    @Autowired
+    private lateinit var commonUserMapper: CommonUserMapper
+
+    @Autowired
+    private lateinit var userMapper: UserMapper
+
+    @TargetDatabase(db = DbType.COMMON)
+    fun getCommonUser(userId: String): CommonUser? {
+        return commonUserMapper.selectOne(userId)
+    }
+
+    @TargetDatabase(db = DbType.USER, paramType = ParamType.SHARD_NO)
+    fun getUserByShardNo(shardNo: Int, userId: String): User? {
+        return userMapper.selectOne(userId)
+    }
+
+    @TargetDatabase(db = DbType.USER, paramType = ParamType.USER_ID)
+    fun getUserById(userId: String): User? {
+        return userMapper.selectOne(userId)
+    }
+    
+    // Rollback with duplicates
+    @TargetDatabase(db = DbType.USER, paramType = ParamType.SHARD_NO, useTransaction = true)
+    fun insertUserWithTransaction(shardNo: Int, user: User) {
+        userMapper.insert(user)
+        userMapper.insertOnly(user)
     }
 }
 ```
