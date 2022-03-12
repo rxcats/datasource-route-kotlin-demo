@@ -19,6 +19,7 @@
         <kotlin.version>1.6.10</kotlin.version>
 
         <mybatis-spring-boot-starter.version>2.2.2</mybatis-spring-boot-starter.version>
+        <mybatis-dynamic-sql.version>1.4.0</mybatis-dynamic-sql.version>
     </properties>
 
     <dependencies>
@@ -42,6 +43,12 @@
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>${mybatis-spring-boot-starter.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mybatis.dynamic-sql</groupId>
+            <artifactId>mybatis-dynamic-sql</artifactId>
+            <version>${mybatis-dynamic-sql.version}</version>
         </dependency>
 
         <dependency>
