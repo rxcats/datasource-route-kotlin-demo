@@ -94,3 +94,21 @@ class UserService {
     }
 }
 ```
+
+## Dynamic Sql 예제
+```kotlin
+@Service
+class UserService {
+    @Autowired
+    private lateinit var commonUserDynamicSqlMapper: CommonUserDynamicSqlMapper
+
+    @TargetDatabase(db = DbType.COMMON)
+    fun getCommonUser(uid: String): CommonUserRow? {
+        commonUserMapper.selectOne {
+            where {
+                userId isEqualTo uid
+            }
+        }
+    }
+}
+```
