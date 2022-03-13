@@ -10,10 +10,9 @@ mybatis.configuration.map-underscore-to-camel-case=true
 
 # 공통 MySQL 설정
 app.database.driver-class-name=com.mysql.cj.jdbc.Driver
-app.database.shard-targets=1,2
 
-# 유저 생성시 샤딩 타겟이 되는 DB index array 값
-app.database.shard-targets=0,1
+# 유저 생성시 샤딩 타겟이 되는 userdb index 값
+app.database.shard-targets=1,2
 
 # commondb
 app.database.properties.common.pool-name=commondb
